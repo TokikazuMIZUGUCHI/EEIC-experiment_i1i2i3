@@ -1,29 +1,58 @@
-#include <fcntl.h>
-#include <unistd.h>
 #include <stdio.h>
+#define _POSIX_SOURCE
+#include <fcntl.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include<math.h>
+#include <math.h>
 
-
-/*量子化ビット数： 16bit
-チャンネル数 １
-標本の符号化方式 signed-int
-標本化周波数： 44100 Hz*/
-
-//#define M_PI 3.1415926535
-/*A = 0.3
-*/
-
-int main(int argc, char **argv){ 
-    int A = atoi(argv[1]);
-    int n = atoi(argv[2]);                    
-    short sample[n * 13200];            
-    for (int j = 0; j < n; j++){
-        for(int i = 0; i < 13200; i++){
-            sample[i] = (short)(A * sin(2 * 3.1415926535 * j * 440 * pow(2,1/12) * i / 44100));    
-        }
+int main(int argc, char ** argv){
+    if (argc != 3){
+        fprintf(stderr, "usage: %s <filename>\n", argv[0]);
+        exit(1);
     }
-    write(1, sample, 2 * n);
+    float pi = 3.1415926535;
+    int A = atoi(argv[1]);
+    int n = atoi(argv[2]);
+    short signal[13230 * n];
+    float t = 1.0 / 44100;
+    float f = 440;
+    f *= pow(2, 1.0/6);
+    for (int i = 0; i < 13230 * n; i++){
+        signal[i] = (short)(A * sin(2 * pi * f * t * i));
+        if (i % 13230 == 0){
+            switch ((i / 13230) % 7){
+            case 1:
+            f *= pow(2, 1.0 / 6);
+            break;
+            case 2:
+            f *= pow(2, 1.0 / 6);
+            break;
+            case 3:
+            f *= pow(2, 1.0 / 12);
+            break;
+            case 4:
+            f *= pow(2, 1.0 / 6);
+            break;
+            case 5:
+            f *= pow(2, 1.0 / 6);
+            break;
+            case 6:
+            f *= pow(2, 1.0 / 6);
+            break;
+            case 0:
+            f *= pow(2, 1.0 / 12);
+            break;
+            default:
+            break;
+        }
+        }
+
+    }
+    short fd = open("onkai.raw", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    write(fd, signal, 2 * n * 13230);
+    //for (int i = 0; i < n; i++){
+    //    printf("%d", signal[i]);
+    //}
 }
