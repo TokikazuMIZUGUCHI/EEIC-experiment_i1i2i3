@@ -53,4 +53,5 @@ int main(int argc, char ** argv)
   free(s);
 }
 
+
   //free(s)をリターンの後 ダブルフリー;

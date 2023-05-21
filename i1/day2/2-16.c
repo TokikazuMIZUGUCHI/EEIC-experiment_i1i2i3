@@ -1,11 +1,11 @@
 #include <stdio.h>
-#define _POSIX_SOURCE
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <math.h>
+#define _POSIX_SOURCE
 
 int main(int argc, char ** argv){
     if (argc != 3){
@@ -50,9 +50,6 @@ int main(int argc, char ** argv){
         }
 
     }
-    short fd = open("onkai.raw", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    short fd = open("doremi.raw", O_WRONLY | O_CREAT | O_TRUNC, 0644);
     write(fd, signal, 2 * n * 13230);
-    //for (int i = 0; i < n; i++){
-    //    printf("%d", signal[i]);
-    //}
 }
